@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Source PDF (copyrighted) and generated vector store
+*.pdf
+poeaa_chroma/
+
+# Secrets
+.env
