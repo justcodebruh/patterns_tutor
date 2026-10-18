@@ -1,0 +1,62 @@
+{
+  "pattern": "Identity Map",
+  "question": "A reporting module loads Customer #42 twice in the same request, once while building an order summary and once while computing loyalty points, and both copies are modified before saving. What goes wrong, which pattern addresses it, and when does Fowler say you don't need it?",
+  "cases": [
+    {
+      "id": "im-terse-correct",
+      "category": "terse_correct",
+      "expected_outcome": "pass",
+      "score_band": [
+        75,
+        100
+      ],
+      "answer": "Two in-memory objects for one row, so the edits are made inconsistently and one can overwrite the other. An Identity Map keeps every loaded object in a map keyed by ID for the business transaction; you check it before loading, so you get the same object and save a read. Not needed for immutable Value Objects or Dependent Mapping children, and it doesn't handle conflicts across sessions; that's for the offline locks.",
+      "must_credit": [
+        "two objects for one record lead to inconsistent updates",
+        "map of loaded objects checked before loading; also a cache",
+        "not needed for immutable/value objects or dependent mapping",
+        "does not solve cross-session conflicts"
+      ],
+      "remediation_expected": false,
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    },
+    {
+      "id": "im-partial-mechanism",
+      "category": "partial_mechanism",
+      "expected_outcome": "fail",
+      "score_band": [
+        25,
+        74
+      ],
+      "remediation_expected": true,
+      "answer": "Loading the same customer twice wastes a database call. An Identity Map caches objects so the second load comes from memory, which is faster.",
+      "must_credit": [
+        "correctness problem (two objects, inconsistent updates) is missing",
+        "when it is not needed is missing"
+      ],
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    },
+    {
+      "id": "im-wrong-pattern",
+      "category": "wrong_pattern",
+      "expected_outcome": "fail",
+      "score_band": [
+        0,
+        40
+      ],
+      "answer": "The fix is a Unit of Work: it records both copies as dirty and at commit merges their changes into a single UPDATE so nothing is lost. You don't need it if you use database transactions.",
+      "must_credit": [
+        "names the wrong pattern; Identity Map prevents the duplicate load",
+        "Unit of Work does not merge duplicate copies"
+      ],
+      "remediation_expected": true,
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    }
+  ]
+}

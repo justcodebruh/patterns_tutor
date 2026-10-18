@@ -1,0 +1,80 @@
+{
+  "pattern": "Domain Model",
+  "question": "Your team's insurance pricing service has dozens of interacting rules (discounts that depend on policy type, region and claims history) and the rules change every quarter. One developer wants each pricing endpoint to be a self-contained procedure; another wants a Domain Model. Which does Fowler favor here, why, and what costs come with that choice, including its effect on the data-source layer?",
+  "cases": [
+    {
+      "id": "dm-model-answer",
+      "category": "model_answer",
+      "expected_outcome": "pass",
+      "score_band": [
+        75,
+        100
+      ],
+      "answer": "Fowler favors a Domain Model when the business rules are complicated and keep changing, which describes this pricing service. A Domain Model is a web of interconnected objects where each object is a meaningful concept like Policy, Discount or ClaimsHistory, and behavior lives with the data, so variations can be expressed through polymorphism and small collaborating objects instead of conditionals duplicated across procedures. The costs: it is harder to learn and to use well, so the team has to be comfortable thinking in objects, and the mapping to the database gets complex. As the model gets rich it diverges from the schema, so you typically need a Data Mapper rather than Active Record, which adds a layer. With only simple logic, Transaction Script would be the cheaper choice.",
+      "must_credit": [
+        "complex, changing business rules favor Domain Model",
+        "objects combine data and behavior; reduces duplication",
+        "cost: harder to learn/use; team needs OO skill",
+        "rich model pushes toward Data Mapper over Active Record"
+      ],
+      "remediation_expected": false,
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    },
+    {
+      "id": "dm-partial-mechanism",
+      "category": "partial_mechanism",
+      "expected_outcome": "fail",
+      "score_band": [
+        25,
+        74
+      ],
+      "remediation_expected": true,
+      "answer": "A Domain Model means you create a class for each business concept, like Policy and Discount, and put the methods that work on that data inside those classes. The objects call each other to compute the price.",
+      "must_credit": [
+        "when to choose it (complex/changing rules) is missing",
+        "costs (learning curve, mapping complexity) are missing",
+        "effect on data source layer (Data Mapper) is missing"
+      ],
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    },
+    {
+      "id": "dm-wrong-pattern",
+      "category": "wrong_pattern",
+      "expected_outcome": "fail",
+      "score_band": [
+        0,
+        45
+      ],
+      "answer": "Use a Domain Model where each class wraps exactly one row of a database table and has its own save() and find() methods with the SQL inside, so the object structure mirrors the schema one to one. That's the main benefit: the database design and the object design are always the same, so there's nothing to map.",
+      "must_credit": [
+        "describes Active Record, not a rich Domain Model",
+        "coupling objects to schema is a cost, not the benefit",
+        "complex rules point to Data Mapper"
+      ],
+      "remediation_expected": true,
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    },
+    {
+      "remediation_expected": true,
+      "forbidden_feedback_phrases": [],
+      "notes": "Held out: written after grader v2, never used to tune it.",
+      "authored_by": "human",
+      "holdout": true,
+      "id": "dm-holdout-asks-for-answer",
+      "category": "empty_or_idk",
+      "expected_outcome": "fail",
+      "score_band": [
+        0,
+        10
+      ],
+      "answer": "Honestly I'm not sure. Could you explain what a Domain Model is and when Fowler would use it first, and then I'll try?",
+      "must_credit": []
+    }
+  ]
+}

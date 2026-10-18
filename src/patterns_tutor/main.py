@@ -1,6 +1,7 @@
 import argparse
 import os
-from typing import Any, Callable, Optional
+from importlib.metadata import version
+from typing import Any, Callable, Optional, Sequence
 
 from dotenv import load_dotenv
 from langgraph.checkpoint.sqlite import SqliteSaver
@@ -16,6 +17,7 @@ from patterns_tutor.schemas import PASS_THRESHOLD, SKIP_COMMAND, InterruptPayloa
 
 CHECKPOINT_DB = "poeaa_tutor_checkpoints.sqlite"
 MASTERY_DB = "poeaa_tutor_mastery.sqlite"
+__version__ = version("patterns-tutor")
 HELP_TEXT = "(Answer, then an empty line to submit. Commands: /ledger, /layer <name>, /skip, /quit)"
 
 
@@ -91,12 +93,53 @@ def set_target_layer(context: TutorContext, argument: str) -> None:
     print(f"Layer set to {layer}. It applies from the next new pattern, after the current question.")
 
 
+def turn_config(
+    graph: CompiledStateGraph, config: dict, context: TutorContext, tags: Sequence[str] = ()
+) -> dict:
+    """Adds LangSmith metadata and tags for one graph invocation (one trace).
+
+    `thread_id` in metadata groups every turn of a session into one LangSmith thread. Pattern
+    and attempt describe the question being answered in this turn, read from the checkpoint
+    before the invocation, so grades can be filtered by pattern and attempt in the UI.
+    """
+    thread_id = config["configurable"]["thread_id"]
+    metadata = {
+        "thread_id": thread_id,
+        "user_id": context.user_id,
+        "target_layer": context.target_layer or "all",
+        "app_version": __version__,
+    }
+    values = graph.get_state(config).values
+    if values.get("active_question"):
+        metadata.update(
+            pattern=values["current_pattern"],
+            layer=values["current_layer"],
+            attempt=values.get("attempts", 0) + 1,
+            is_remediation=values.get("attempts", 0) > 0,
+        )
+    return {
+        **config,
+        "run_name": "tutor_turn",
+        "metadata": {**config.get("metadata", {}), **metadata},
+        "tags": [*config.get("tags", []), "poeaa-tutor", *tags],
+    }
+
+
 def advance(
-    graph: CompiledStateGraph, graph_input: Any, config: dict, context: TutorContext
+    graph: CompiledStateGraph,
+    graph_input: Any,
+    config: dict,
+    context: TutorContext,
+    tags: Sequence[str] = (),
 ) -> Optional[InterruptPayload]:
     """Runs the graph to its next interrupt, or returns None when the graph has ended."""
     print("\nThinking...")
-    result = graph.invoke(graph_input, config=config, context=context, version="v2")
+    result = graph.invoke(
+        graph_input,
+        config=turn_config(graph, config, context, tags),
+        context=context,
+        version="v2",
+    )
     if result.interrupts:
         return result.interrupts[0].value
     if result.value.get("last_feedback"):
@@ -117,7 +160,7 @@ def run_session(
         print("Resuming your previous session.")
         payload = pending[0].value
     else:
-        payload = advance(graph, {}, config, context)
+        payload = advance(graph, {}, config, context, tags=["session-start"])
 
     while payload is not None:
         render_challenge(payload)
@@ -134,7 +177,8 @@ def run_session(
                 print(f"Unknown command '{answer}'. {HELP_TEXT}")
             else:
                 break
-        payload = advance(graph, Command(resume=answer), config, context)
+        tags = ["skip"] if answer == SKIP_COMMAND else ["answer"]
+        payload = advance(graph, Command(resume=answer), config, context, tags=tags)
 
     print(f"\n{format_ledger(store, context.user_id)}")
 
@@ -155,7 +199,7 @@ def main() -> int:
         print(error)
         return 1
 
-    config = {"configurable": {"thread_id": args.thread or f"{args.user}-session"}}
+    config = {"configurable": {"thread_id": args.thread or f"{args.user}-session"}, "tags": ["cli"]}
     context = TutorContext(user_id=args.user)
     with (
         SqliteSaver.from_conn_string(CHECKPOINT_DB) as checkpointer,

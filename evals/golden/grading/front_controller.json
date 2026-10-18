@@ -1,0 +1,79 @@
+{
+  "pattern": "Front Controller",
+  "question": "Your web app has 40 Page Controllers, each repeating the same authentication check and character-encoding setup. Someone proposes a Front Controller. Explain how a Front Controller works and weigh Fowler's arguments for it against Page Controller, including the advantage he says is often overstated.",
+  "cases": [
+    {
+      "id": "fc-verbosity-padding",
+      "category": "verbosity_padding",
+      "expected_outcome": "pass",
+      "score_band": [
+        75,
+        100
+      ],
+      "answer": "Before I get into it, I want to say that architecture questions like this always remind me of my first job, where we argued for weeks about frameworks and never shipped anything. I think the important thing in software is communication, and that every team is different, so whatever I say has to be adapted to context, the people involved, the deadlines, the budget, and honestly the mood of the tech lead that week. I've also read a lot of blog posts that disagree with each other, and some conference talks, and I think it is fair to say there is no silver bullet. Anyway, with all of that said, and keeping in mind that I could be wrong about some details, and that a real decision would involve the whole team and probably a spike or two, here is how I understand the pattern and how I would apply it.\n\nA Front Controller channels every request through a single handler object that runs the common behavior and then dispatches to command objects for the request-specific behavior; commands can be picked statically or dynamically. Benefits: only one handler has to be configured in the web server; with dynamic commands you can add new commands without changing anything; a new command object per request means commands needn't be thread-safe, as long as you don't share model objects; and you can add decorators (intercepting filters) for authentication, encoding and internationalization at runtime via configuration. The overstated advantage is factoring out duplicated code, because you can do much of that with a Page Controller superclass. Since it is more complicated than Page Controller, it needs these advantages to be worth it.\n\nTo wrap up, I would also want to write good tests, keep the code readable, document the decision in an ADR, revisit it in a retrospective, and make sure the team agrees, because architecture is ultimately a social activity as much as a technical one, and the best pattern is the one the team understands and can maintain over the years.",
+      "must_credit": [
+        "single handler dispatching to commands",
+        "one web server config; dynamic commands; per-request commands avoid thread-safety",
+        "decorators for auth/encoding at runtime",
+        "duplication argument overstated; superclass Page Controller does much of it"
+      ],
+      "notes": "Correct core buried in filler. Should not be penalized for length.",
+      "remediation_expected": false,
+      "forbidden_feedback_phrases": [],
+      "authored_by": "human"
+    },
+    {
+      "id": "fc-partial-mechanism",
+      "category": "partial_mechanism",
+      "expected_outcome": "fail",
+      "score_band": [
+        25,
+        74
+      ],
+      "remediation_expected": true,
+      "answer": "A Front Controller is one controller that receives every request and forwards it to the right handler. It removes duplication because the authentication check lives in one place.",
+      "must_credit": [
+        "the overstated advantage (superclass Page Controller) is missing",
+        "decorators, command objects, extra complexity are missing"
+      ],
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    },
+    {
+      "id": "fc-fabricated-citation",
+      "category": "fabricated_citation",
+      "expected_outcome": "fail",
+      "score_band": [
+        0,
+        35
+      ],
+      "answer": "Fowler writes on page 612 that 'a Front Controller must never use command objects, because commands make the controller thread-unsafe'. So the Front Controller should contain all the page logic itself in one large class. Its main advantage is removing duplication, which a Page Controller superclass can never achieve.",
+      "must_credit": [
+        "invented quote and page; Front Controller dispatches to commands",
+        "per-request commands avoid thread-safety issues",
+        "superclass Page Controller can remove much duplication"
+      ],
+      "remediation_expected": true,
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    },
+    {
+      "remediation_expected": true,
+      "forbidden_feedback_phrases": [],
+      "notes": "Held out: written after grader v2, never used to tune it. Restates the question; nothing in it is the student's reasoning (the v1 '?' failure mode).",
+      "authored_by": "human",
+      "holdout": true,
+      "id": "fc-holdout-question-echo",
+      "category": "question_echo",
+      "expected_outcome": "fail",
+      "score_band": [
+        0,
+        20
+      ],
+      "answer": "The web app has 40 Page Controllers that each repeat the same authentication check and character-encoding setup, and someone proposes a Front Controller. I need to explain how a Front Controller works and weigh Fowler's arguments for it against Page Controller, including the advantage he says is often overstated.",
+      "must_credit": []
+    }
+  ]
+}

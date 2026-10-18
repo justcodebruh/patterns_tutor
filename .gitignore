@@ -15,3 +15,7 @@ poeaa_chroma/
 
 # Secrets
 .env
+
+# Local tutor state and eval run logs
+*.sqlite
+evals/results/*.log

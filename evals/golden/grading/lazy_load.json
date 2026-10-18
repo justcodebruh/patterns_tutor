@@ -1,0 +1,81 @@
+{
+  "pattern": "Lazy Load",
+  "question": "An Order object always loads its 2,000 line items and the customer's full purchase history, even on the order list page that only shows order number and total. A teammate proposes making every field lazy, including the order's notes column stored in the same row. Evaluate this proposal using Fowler's guidance on Lazy Load.",
+  "cases": [
+    {
+      "id": "ll-model-answer",
+      "category": "model_answer",
+      "expected_outcome": "pass",
+      "score_band": [
+        75,
+        100
+      ],
+      "answer": "Lazy Load leaves a marker in the object structure so related data is loaded only when it's used, which fixes loading one object dragging in a huge number of related objects. Line items and purchase history need extra database calls and aren't used on the list page, which is exactly when Fowler says Lazy Load pays off. Making every field lazy is wrong, though: a field in the same row as the rest of the object, like notes, costs almost nothing extra to bring back in the same call, even if it is large like a Serialized LOB, so lazy-loading it just adds calls. It's often better to bring everything one UI interaction needs in a single call. Lazy Load also adds complexity, so Fowler only uses it when he actively thinks he'll need it. It can be implemented as lazy initialization, a virtual proxy, a value holder or a ghost.",
+      "must_credit": [
+        "marker loads data only when used",
+        "worth it when the data needs an extra call and is not used",
+        "pointless for fields in the same row",
+        "adds complexity; use only when needed"
+      ],
+      "remediation_expected": false,
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    },
+    {
+      "id": "ll-contradicts-book",
+      "category": "contradicts_book",
+      "expected_outcome": "fail",
+      "score_band": [
+        0,
+        35
+      ],
+      "answer": "Yes, make every field lazy. Fowler recommends Lazy Load as the default for all fields because an extra database call is cheap compared to loading data you might not use, and fields in the same row are the best candidates since they're the biggest. Lazy Load adds no real complexity.",
+      "must_credit": [
+        "same-row fields are pointless to lazy load (answer claims the opposite)",
+        "Lazy Load adds complexity (answer denies it)"
+      ],
+      "remediation_expected": true,
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    },
+    {
+      "id": "ll-rubric-parrot",
+      "category": "rubric_parrot",
+      "expected_outcome": "fail",
+      "score_band": [
+        0,
+        60
+      ],
+      "answer": "An object that doesn't contain all of the data you need but knows how to get it. A Lazy Load interrupts this loading process for the moment, leaving a marker in the object structure so that if the data is needed it can be loaded only when it is used.",
+      "must_credit": [
+        "does not evaluate the proposal",
+        "does not address the same-row notes field"
+      ],
+      "notes": "Copied definition text with no application to the scenario.",
+      "remediation_expected": true,
+      "forbidden_feedback_phrases": [],
+      "authored_by": "human"
+    },
+    {
+      "remediation_expected": true,
+      "forbidden_feedback_phrases": [],
+      "notes": "Held out: written after grader v2, never used to tune it.",
+      "authored_by": "human",
+      "holdout": true,
+      "id": "ll-holdout-confident-jargon",
+      "category": "wrong_pattern",
+      "expected_outcome": "fail",
+      "score_band": [
+        0,
+        30
+      ],
+      "answer": "Lazy Load is a write-behind caching strategy: instead of writing changes to the database immediately, the object lazily buffers its writes and flushes them in a batch later, which reduces round trips. So yes, make every field lazy, since buffering writes for the notes column is just as useful as for line items.",
+      "must_credit": [
+        "Lazy Load defers loading/reading, not writing (that is closer to Unit of Work)",
+        "same-row fields are pointless to lazy load"
+      ]
+    }
+  ]
+}

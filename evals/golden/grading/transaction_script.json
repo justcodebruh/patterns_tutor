@@ -1,0 +1,63 @@
+{
+  "pattern": "Transaction Script",
+  "question": "A startup is building a small internal tool where each screen triggers one operation: 'record a refund', 'list open invoices', 'close the month'. A senior engineer insists on a rich object model from day one. Using Fowler's reasoning, when is Transaction Script the right choice here, and what warning sign tells you it is time to move away from it?",
+  "cases": [
+    {
+      "id": "ts-model-answer",
+      "category": "model_answer",
+      "expected_outcome": "pass",
+      "score_band": [
+        75,
+        100
+      ],
+      "answer": "Transaction Script organizes the logic as one procedure per request from the presentation: 'record a refund' is a single procedure that does its validation and calculations and talks to the database directly or through a thin wrapper, with common subtasks pulled into subprocedures. Its strength is simplicity. For an app with only a little logic, like this one, it has very little overhead in performance or in understanding, so you get running faster than with a rich model. The warning sign is duplication between transactions: because each script handles one transaction, shared rules such as refund eligibility get copied into several scripts, and as the logic grows it gets progressively harder to keep well designed. That is when Fowler points to a Domain Model. He also warns that refactoring from Transaction Script to Domain Model is harder than it needs to be, so if you expect complexity, switch early. But he says not to rule out Transaction Script just because you prefer objects.",
+      "must_credit": [
+        "one procedure per request/transaction",
+        "simplicity and low overhead for small amounts of logic",
+        "duplication between transactions as logic grows",
+        "move to Domain Model; refactoring later is harder, so switch early"
+      ],
+      "remediation_expected": false,
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    },
+    {
+      "id": "ts-contradicts-book",
+      "category": "contradicts_book",
+      "expected_outcome": "fail",
+      "score_band": [
+        0,
+        35
+      ],
+      "answer": "Transaction Script should be avoided even for simple apps because it has high performance overhead and is hard to understand. It puts all the logic for the whole application into one big procedure, so there is never any duplication. Converting a Transaction Script codebase into a Domain Model later is trivial, so it doesn't matter what you start with.",
+      "must_credit": [
+        "Transaction Script is simple with low overhead (answer claims the opposite)",
+        "duplication between transactions is the main problem (answer denies it)",
+        "refactoring to Domain Model is harder than it needs to be (answer says trivial)"
+      ],
+      "remediation_expected": true,
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    },
+    {
+      "id": "ts-rubric-parrot",
+      "category": "rubric_parrot",
+      "expected_outcome": "fail",
+      "score_band": [
+        0,
+        60
+      ],
+      "answer": "Organizes business logic by procedures where each procedure handles a single request from the presentation. Most business applications can be thought of as a series of transactions. A transaction may view some information as organized in a particular way, another will make changes to it.",
+      "must_credit": [
+        "does not address when it fits this tool",
+        "does not name duplication as the warning sign"
+      ],
+      "notes": "Copied definition text with no application to the scenario.",
+      "remediation_expected": true,
+      "forbidden_feedback_phrases": [],
+      "authored_by": "human"
+    }
+  ]
+}

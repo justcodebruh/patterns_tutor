@@ -1,0 +1,81 @@
+{
+  "pattern": "Remote Facade",
+  "question": "A Swing desktop client talks to a server-side Domain Model over the network, calling address.getStreet(), address.getCity() and address.getZip() separately for every address on screen. The UI is sluggish. How would Fowler restructure this, where should business logic live, and when would the pattern be unnecessary?",
+  "cases": [
+    {
+      "id": "rf-model-answer",
+      "category": "model_answer",
+      "expected_outcome": "pass",
+      "score_band": [
+        75,
+        100
+      ],
+      "answer": "Each getter is a remote call, and inter-process calls are orders of magnitude more expensive than in-process ones because of marshaling, security checks and network routing, so a fine-grained interface across the network kills performance. Fowler's answer is a Remote Facade: a coarse-grained facade over the fine-grained objects, such as getAddressData() and setAddress(street, city, zip), which translates into the fine-grained calls on the server, usually carrying data in Data Transfer Objects. The facade contains no domain logic; it is a thin skin and the logic stays in the fine-grained domain objects, so you keep the benefits of small objects and still get a coarse remote interface. It's unnecessary when all access is within one process, such as presentation and Domain Model in the same web server, and it isn't used with Transaction Script as a rule because scripts are already coarse-grained.",
+      "must_credit": [
+        "inter-process calls are orders of magnitude more expensive",
+        "coarse-grained facade translating to fine-grained objects",
+        "facade has no domain logic",
+        "unnecessary within a single process"
+      ],
+      "remediation_expected": false,
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    },
+    {
+      "id": "rf-contradicts-book",
+      "category": "contradicts_book",
+      "expected_outcome": "fail",
+      "score_band": [
+        0,
+        35
+      ],
+      "answer": "Fowler would move the pricing and validation logic into the Remote Facade so the server does more work per call, making the facade the main home of the business rules. Remote calls on the same machine are basically free, so this only matters across data centers, and you should use a Remote Facade even inside one process for consistency.",
+      "must_credit": [
+        "facade contains no domain logic (answer puts logic in it)",
+        "same-machine inter-process calls are still expensive",
+        "not needed within one process"
+      ],
+      "remediation_expected": true,
+      "forbidden_feedback_phrases": [],
+      "notes": "",
+      "authored_by": "human"
+    },
+    {
+      "id": "rf-keyword-stuffing",
+      "category": "keyword_stuffing",
+      "expected_outcome": "fail",
+      "score_band": [
+        0,
+        30
+      ],
+      "answer": "Remote Facade, Data Transfer Object, coarse-grained, fine-grained, Gang of Four Facade, Service Layer, RPC, marshaling, serialization, latency, distribution, Domain Model, Swing, servlet, assembler, session facade, no domain logic.",
+      "must_credit": [],
+      "notes": "Correct vocabulary, zero reasoning.",
+      "remediation_expected": true,
+      "forbidden_feedback_phrases": [],
+      "authored_by": "human"
+    },
+    {
+      "remediation_expected": false,
+      "forbidden_feedback_phrases": [],
+      "notes": "Held out: written after grader v2, never used to tune it.",
+      "authored_by": "human",
+      "holdout": true,
+      "id": "rf-holdout-terse-correct",
+      "category": "terse_correct",
+      "expected_outcome": "pass",
+      "score_band": [
+        75,
+        100
+      ],
+      "answer": "Every getter is a remote call and inter-process calls are orders of magnitude slower than local ones. Put a coarse-grained Remote Facade on the server (getAddressData / setAddress(street, city, zip)) that maps onto the fine-grained objects, usually with DTOs. It holds no domain logic. Skip it when everything runs in one process.",
+      "must_credit": [
+        "remote calls are far more expensive",
+        "coarse-grained facade over fine-grained objects",
+        "no domain logic in facade",
+        "not needed in one process"
+      ]
+    }
+  ]
+}

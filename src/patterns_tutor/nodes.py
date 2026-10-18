@@ -1,10 +1,17 @@
 from typing import Literal
 
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.runtime import Runtime
 from langgraph.types import Command, interrupt
 
-from patterns_tutor.retrieval import get_llm, pick_next_pattern, retrieve_pattern_rubric
+from patterns_tutor.grading import grade_answer
+from patterns_tutor.questions import generate_question
+from patterns_tutor.retrieval import (
+    get_llm,
+    pick_next_pattern,
+    record_mastery,
+    retrieve_pattern_rubric,
+)
 from patterns_tutor.schemas import (
     MAX_ATTEMPTS,
     PASS_THRESHOLD,
@@ -14,38 +21,6 @@ from patterns_tutor.schemas import (
     TutorContext,
     TutorState,
 )
-
-QUESTION_SYSTEM_PROMPT = """You are a Socratic tutor examining a student on Martin Fowler's \
-*Patterns of Enterprise Application Architecture*.
-
-Write ONE question about the pattern "{pattern}" ({layer}). Prefer a concrete architecture \
-scenario or code-design trade-off that forces the student to reason about when and why to use \
-the pattern, how it works, and how it compares to the related patterns Fowler cites. Ground \
-the question strictly in the book excerpts below; do not reveal the answer.
-
-Reply with the question text only.
-
-Book excerpts:
-{rubric}"""
-
-GRADER_SYSTEM_PROMPT = """You are a strict examiner grading a student's answer about Martin \
-Fowler's *Patterns of Enterprise Application Architecture*. Grade ONLY against the book \
-excerpts below, not general industry opinion.
-
-Scoring: 0-100. {threshold}+ means the answer captures Fowler's core mechanism and the key \
-trade-offs for this question. Credit correct reasoning in the student's own words; penalize \
-claims that contradict the book.
-
-- strengths: what the answer got right, per Fowler.
-- missed_fowler_tradeoffs: forces or trade-offs from the excerpts the answer missed or got wrong.
-- book_page_reference: the book page range to reread (the excerpts cover pages {book_pages}).
-- remediation_question: only if score < {threshold}, one Socratic follow-up question that \
-leads the student toward the most important missed trade-off without giving it away.
-
-Pattern: {pattern} ({layer})
-
-Book excerpts:
-{rubric}"""
 
 
 def select_and_challenge(
@@ -121,15 +96,7 @@ def _prepare_question(
 
     layer, pattern = picked
     rubric, book_pages = retrieve_pattern_rubric(pattern)
-    response = get_llm(runtime).invoke(
-        [
-            SystemMessage(
-                QUESTION_SYSTEM_PROMPT.format(pattern=pattern, layer=layer, rubric=rubric)
-            ),
-            HumanMessage(f"Ask me about {pattern}."),
-        ]
-    )
-    question = response.text.strip()
+    question = generate_question(pattern=pattern, layer=layer, rubric=rubric, llm=get_llm(runtime))
     return Command(
         update={
             "current_layer": layer,
@@ -149,30 +116,23 @@ def evaluate_and_route(
     state: TutorState, runtime: Runtime[TutorContext]
 ) -> Command[Literal["select_and_challenge"]]:
     """Grades the answer, records mastery, and decides between remediation and moving on."""
-    grader = get_llm(runtime).with_structured_output(EvaluationResult)
-    grade: EvaluationResult = grader.invoke(
-        [
-            SystemMessage(
-                GRADER_SYSTEM_PROMPT.format(
-                    threshold=PASS_THRESHOLD,
-                    pattern=state["current_pattern"],
-                    layer=state["current_layer"],
-                    book_pages=state["book_pages"],
-                    rubric=state["book_rubric"],
-                )
-            ),
-            HumanMessage(
-                f"Question:\n{state['active_question']}\n\nStudent answer:\n{state['user_answer']}"
-            ),
-        ]
+    grade = grade_answer(
+        pattern=state["current_pattern"],
+        layer=state["current_layer"],
+        book_pages=state["book_pages"],
+        rubric=state["book_rubric"],
+        question=state["active_question"],
+        answer=state["user_answer"],
+        llm=get_llm(runtime),
     )
 
     passed = grade.score >= PASS_THRESHOLD
     attempts = state.get("attempts", 0) + 1
     book_pages = grade.book_page_reference or state["book_pages"]
 
-    runtime.store.put(
-        ("mastery", runtime.context.user_id),
+    record_mastery(
+        runtime.store,
+        runtime.context.user_id,
         state["current_pattern"],
         {
             "layer": state["current_layer"],

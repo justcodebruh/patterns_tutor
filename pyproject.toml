@@ -5,17 +5,31 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "langchain>=1.4.6",
     "langchain-chroma>=1.1.0",
     "langchain-core>=1.6.10",
     "langchain-openai>=1.7.1",
     "langchain-text-splitters>=1.1.3",
+    "langgraph>=1.2.15",
+    "langgraph-checkpoint-sqlite>=3.1.2",
+    "langsmith>=0.14.8",
     "pymupdf>=1.28.2",
+    "python-dotenv>=1.2.4",
 ]
 
 [project.scripts]
-patterns-tutor = "patterns_tutor:main"
+patterns-tutor = "patterns_tutor.main:main"
 patterns-tutor-ingest = "patterns_tutor.ingestion:main"
+patterns-tutor-eval = "patterns_tutor.evals.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.12.23,<0.13.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

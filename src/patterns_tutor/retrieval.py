@@ -7,6 +7,7 @@ from langchain_chroma import Chroma
 from langchain_core.language_models import BaseChatModel
 from langgraph.runtime import Runtime
 from langgraph.store.base import BaseStore
+from langsmith import traceable
 
 from patterns_tutor.catalog import POEAA_CATALOG
 from patterns_tutor.schemas import PASS_THRESHOLD, TutorContext
@@ -42,6 +43,18 @@ def load_vectorstore() -> Chroma:
     return vectorstore
 
 
+def _summarize_rubric(output: tuple[str, str]) -> dict:
+    # The full rubric is already visible on the LLM runs; the retriever span records its shape
+    rubric, book_pages = output
+    return {
+        "book_pages": book_pages,
+        "rubric_chars": len(rubric),
+        "chunk_count": rubric.count("[Pages "),
+        "sections_present": [s for s in RUBRIC_SECTIONS if f"Section: {s}" in rubric],
+    }
+
+
+@traceable(run_type="retriever", name="retrieve_pattern_rubric", process_outputs=_summarize_rubric)
 def retrieve_pattern_rubric(pattern_name: str) -> tuple[str, str]:
     """Returns (rubric_text, book_pages) built from every non-code chunk of a pattern."""
     results = load_vectorstore().get(
@@ -67,6 +80,16 @@ def retrieve_pattern_rubric(pattern_name: str) -> tuple[str, str]:
     return rubric, book_pages
 
 
+def _summarize_pick(inputs: dict) -> dict:
+    # BaseStore is not serializable; record what selection depended on instead
+    return {
+        "user_id": inputs["user_id"],
+        "target_layer": inputs["target_layer"],
+        "exclude": sorted(inputs["exclude"]),
+    }
+
+
+@traceable(run_type="tool", name="pick_next_pattern", process_inputs=_summarize_pick)
 def pick_next_pattern(
     store: BaseStore,
     user_id: str,
@@ -102,6 +125,17 @@ def pick_next_pattern(
         _, _, layer, name = min(failing)
         return layer, name
     return None
+
+
+@traceable(
+    run_type="tool",
+    name="record_mastery",
+    process_inputs=lambda inputs: {k: v for k, v in inputs.items() if k != "store"},
+)
+def record_mastery(store: BaseStore, user_id: str, pattern: str, entry: dict) -> dict:
+    """Persists one pattern's latest grade to the long-term mastery store."""
+    store.put(("mastery", user_id), pattern, entry)
+    return entry
 
 
 @functools.cache
