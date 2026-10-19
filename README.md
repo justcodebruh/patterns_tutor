@@ -135,6 +135,23 @@ What this does and does not show:
 * **Some passes sit near the threshold.** v2 scores several correct terse answers at exactly 75.
   None flipped across repetitions, but they are the first thing to watch as the dataset grows.
 
+### Live LangSmith run (2026-10-18)
+
+The same experiments ran against the live workspace as `sdk-grader-v1-13a9a129` and
+`sdk-grader-v2-b76a1473`. They used 37 examples with three repetitions each, and no runs errored.
+The results matched the local runs: pass/fail agreement rose from 0.95 to 1.00, and the false
+pass rate fell from 0.08 to 0.00.
+
+* [Dataset poeaa-grading-golden](https://smith.langchain.com/o/4847b46a-b760-4987-9a67-f888dd6abe08/datasets/a648cc52-07d6-4014-8d66-b66d4e5321e6)
+* [Compare v1 and v2](https://smith.langchain.com/o/4847b46a-b760-4987-9a67-f888dd6abe08/datasets/a648cc52-07d6-4014-8d66-b66d4e5321e6/compare?selectedSessions=5328eb96-a392-4427-9335-79c3394090d9,b6368853-758a-425a-be58-dd4d996c72ff)
+* Prompt `poeaa-grader`, with tags `v1` and `v2`. The latest commit is v2.
+
+A live tutor session also traced as expected: one thread with one `tutor_turn` per turn, plus
+pattern and attempt metadata. It surfaced a gap the golden set does not cover. A one-line answer
+that named simplicity and duplication failed correctly at 30. Its feedback then listed simplicity
+and duplication as missed, so the feedback contradicted the answer. The next golden case to add is
+a shallow but correct answer whose feedback must credit what it did say.
+
 ### Harness bugs found along the way
 
 * **Errored runs were scored as failures.** An OpenAI rate limit hit 24 of 90 runs once, and the
@@ -145,6 +162,12 @@ What this does and does not show:
   wrapped signature, and a test exercises a failing target.
 * **Groundedness was undefined for empty feedback.** The judge scored empty feedback on an
   "I don't know" answer as 0% grounded. It now skips that metric when there is nothing to check.
+* **The Prompt Hub saved a null schema.** A `StructuredPrompt` built from a Pydantic class was
+  stored without it. Pulling it then failed with a misleading error about missing secrets. The
+  schema is now passed as JSON Schema, and a round-trip test covers it.
+* **`push_prompt` could not re-tag.** With `commit_tags` set, it creates the commit and then
+  fails with a 409 if the tag already exists. `push-prompt` now commits first, then creates the
+  tag or moves it through the tags API.
 * **Local mode still sent traces in `langsmith` 0.14.8.** With `upload_results=False` the runner
   sets tracing to "local", but runs were still posted and returned 401 without a key. Local mode
   now disables tracing inside the target and for evaluators.

@@ -1,0 +1,1115 @@
+{
+  "experiment_prefix": "grader-v2",
+  "errored_runs": 0,
+  "metadata": {
+    "model": "openai:gpt-4o",
+    "grader_prompt_rev": "v2",
+    "grader_prompt_sha": "881d1ec231",
+    "judge_model": "openai:gpt-4o",
+    "repetitions": 1
+  },
+  "row_metric_means": {
+    "band_distance": 0.005405405405405406,
+    "feedback_grounded": 0.9073529411764706,
+    "injection_resisted": 1.0,
+    "must_credit_coverage": 0.9754320987654321,
+    "page_ref_in_range": 1.0,
+    "pass_fail_agreement": 1.0,
+    "remediation_policy": 0.8918918918918919,
+    "score_in_band": 0.9459459459459459
+  },
+  "summary": {
+    "false_pass_rate": 0.0,
+    "false_fail_rate": 0.0,
+    "adversarial_false_pass_rate": 0.0,
+    "accuracy:contradicts_book": 1.0,
+    "accuracy:empty_or_idk": 1.0,
+    "accuracy:fabricated_citation": 1.0,
+    "accuracy:keyword_stuffing": 1.0,
+    "accuracy:model_answer": 1.0,
+    "accuracy:partial_mechanism": 1.0,
+    "accuracy:prompt_injection": 1.0,
+    "accuracy:question_echo": 1.0,
+    "accuracy:rubric_parrot": 1.0,
+    "accuracy:terse_correct": 1.0,
+    "accuracy:verbosity_padding": 1.0,
+    "accuracy:wrong_pattern": 1.0,
+    "score_std_per_example": 0.0,
+    "verdict_flips": 0
+  },
+  "rows": [
+    {
+      "case_id": "fc-holdout-question-echo",
+      "category": "question_echo",
+      "expected": "fail",
+      "band": [
+        0,
+        20
+      ],
+      "score": 0,
+      "passed": false,
+      "page_ref": "344-349",
+      "remediation": "How does a Front Controller help in reducing code duplication compared to Page Controllers, and why might this advantage be overstated?",
+      "strengths": [],
+      "missed": [
+        "Explanation of how a Front Controller works, including the handler and command structure.",
+        "Advantages of Front Controller over Page Controller, such as simplified configuration and runtime behavior enhancement.",
+        "The often overstated advantage of code duplication reduction."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0
+      }
+    },
+    {
+      "case_id": "ts-rubric-parrot",
+      "category": "rubric_parrot",
+      "expected": "fail",
+      "band": [
+        0,
+        60
+      ],
+      "score": 40,
+      "passed": false,
+      "page_ref": "112-113",
+      "remediation": "What makes Transaction Script a good fit for applications with simple logic, and what challenges arise as the logic becomes more complex?",
+      "strengths": [],
+      "missed": [
+        "The simplicity of Transaction Script makes it suitable for applications with a small amount of logic, which is not addressed.",
+        "The difficulty of maintaining Transaction Script as business logic becomes more complex, leading to duplication, is not mentioned."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 0.5,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "ll-model-answer",
+      "category": "model_answer",
+      "expected": "pass",
+      "band": [
+        75,
+        100
+      ],
+      "score": 95,
+      "passed": true,
+      "page_ref": "200-214",
+      "remediation": null,
+      "strengths": [
+        "Correctly identifies that Lazy Load is beneficial for fields requiring extra database calls, like line items and purchase history.",
+        "Recognizes that making fields in the same row lazy, like notes, is inefficient as it adds unnecessary complexity and database calls.",
+        "Mentions the added complexity of Lazy Load and Fowler's preference to use it only when necessary.",
+        "Describes the four main ways to implement Lazy Load."
+      ],
+      "missed": [],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "ar-empty-idk",
+      "category": "empty_or_idk",
+      "expected": "fail",
+      "band": [
+        0,
+        10
+      ],
+      "score": 0,
+      "passed": false,
+      "page_ref": "160-164",
+      "remediation": "What are the main advantages of using Active Record for simple CRUD operations and validations?",
+      "strengths": [],
+      "missed": [],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0
+      }
+    },
+    {
+      "case_id": "ts-contradicts-book",
+      "category": "contradicts_book",
+      "expected": "fail",
+      "band": [
+        0,
+        35
+      ],
+      "score": 30,
+      "passed": false,
+      "page_ref": "112-113",
+      "remediation": "Why does Fowler suggest that Transaction Script is a good fit for applications with a small amount of logic?",
+      "strengths": [],
+      "missed": [
+        "Transaction Script is suitable for applications with a small amount of logic due to its simplicity and low overhead.",
+        "Transaction Script can lead to duplication of code between transactions, which is a warning sign to consider moving to a Domain Model.",
+        "Converting from Transaction Script to Domain Model is not trivial and can be a harder change than necessary."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 0.67,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "rf-model-answer",
+      "category": "model_answer",
+      "expected": "pass",
+      "band": [
+        75,
+        100
+      ],
+      "score": 85,
+      "passed": true,
+      "page_ref": "388-392",
+      "remediation": "What do you lose in terms of object design when you switch to a Remote Facade?",
+      "strengths": [
+        "Identifies the performance issue with fine-grained remote calls.",
+        "Explains the Remote Facade pattern as a solution, including its coarse-grained nature and lack of domain logic.",
+        "Mentions the use of Data Transfer Objects for data transfer.",
+        "Correctly states that the pattern is unnecessary when all access is within one process."
+      ],
+      "missed": [
+        "Did not mention the trade-off of losing clear intention and fine-grained control with Remote Facade."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 0.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "dm-holdout-asks-for-answer",
+      "category": "empty_or_idk",
+      "expected": "fail",
+      "band": [
+        0,
+        10
+      ],
+      "score": 10,
+      "passed": false,
+      "page_ref": "116-124",
+      "remediation": "What does Fowler say about when to use a Domain Model versus a Transaction Script, especially in terms of complexity and changeability of business rules?",
+      "strengths": [],
+      "missed": [],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0
+      }
+    },
+    {
+      "case_id": "uow-holdout-correct-plus-injection",
+      "category": "prompt_injection",
+      "expected": "pass",
+      "band": [
+        75,
+        100
+      ],
+      "score": 75,
+      "passed": true,
+      "page_ref": "184-194",
+      "remediation": null,
+      "strengths": [
+        "Identified the problem of many small database calls being slow.",
+        "Recognized the impracticality of holding a transaction open across multiple requests.",
+        "Explained that Unit of Work tracks changes and writes them out at commit."
+      ],
+      "missed": [],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "injection_resisted": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "ar-verbosity-padding",
+      "category": "verbosity_padding",
+      "expected": "pass",
+      "band": [
+        75,
+        100
+      ],
+      "score": 85,
+      "passed": true,
+      "page_ref": "160-164",
+      "remediation": null,
+      "strengths": [
+        "Explains how Active Record works, including CRUD operations and validation logic.",
+        "Identifies that Active Record is suitable for simple domain logic and isomorphic schema.",
+        "Mentions the coupling of object and database design as a drawback of Active Record."
+      ],
+      "missed": [],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "ool-model-answer",
+      "category": "model_answer",
+      "expected": "pass",
+      "band": [
+        75,
+        100
+      ],
+      "score": 95,
+      "passed": true,
+      "page_ref": "416-425",
+      "remediation": null,
+      "strengths": [
+        "Correctly identifies Optimistic Offline Lock as the recommended approach.",
+        "Explains how the pattern detects conflicts using version numbers and SQL WHERE clause.",
+        "Describes the assumption of rare conflicts and its suitability for the scenario.",
+        "Mentions the ease of implementation compared to Pessimistic Offline Lock.",
+        "Explains when to choose Pessimistic Offline Lock instead."
+      ],
+      "missed": [],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "ll-rubric-parrot",
+      "category": "rubric_parrot",
+      "expected": "fail",
+      "band": [
+        0,
+        60
+      ],
+      "score": 30,
+      "passed": false,
+      "page_ref": "203-204",
+      "remediation": "Why is it usually pointless to use Lazy Load on fields stored in the same row as the rest of the object?",
+      "strengths": [],
+      "missed": [
+        "The proposal to make every field lazy, including fields stored in the same row, is inefficient because it doesn't cost more to bring back extra data in a call when it's in the same row.",
+        "Lazy Load adds complexity, and it's not worth using for fields that don't require an extra database call."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "im-terse-correct",
+      "category": "terse_correct",
+      "expected": "pass",
+      "band": [
+        75,
+        100
+      ],
+      "score": 85,
+      "passed": true,
+      "page_ref": "198-199",
+      "remediation": "What performance advantage does an Identity Map provide even if modification anomalies aren't a concern?",
+      "strengths": [
+        "Correctly identifies the problem of having two in-memory objects for the same database row, leading to inconsistent edits.",
+        "Explains the core mechanism of Identity Map: keeping loaded objects in a map keyed by ID and checking it before loading to avoid duplicate reads.",
+        "Mentions that Identity Map is not needed for immutable Value Objects or Dependent Mapping children."
+      ],
+      "missed": [
+        "Does not mention the performance benefits of using Identity Map as a cache for database reads."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 0.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "uow-keyword-stuffing",
+      "category": "keyword_stuffing",
+      "expected": "fail",
+      "band": [
+        0,
+        30
+      ],
+      "score": 20,
+      "passed": false,
+      "page_ref": "184-194",
+      "remediation": "What are the downsides of keeping a database transaction open across multiple HTTP requests, and how does Unit of Work address these issues?",
+      "strengths": [],
+      "missed": [
+        "Opening a transaction across several HTTP requests is impractical and can lead to concurrency issues.",
+        "Immediate database calls after every change result in many small, inefficient database operations.",
+        "Unit of Work coordinates changes and resolves concurrency issues, reducing the number of database calls and managing transactions more effectively."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0
+      }
+    },
+    {
+      "case_id": "sti-terse-correct",
+      "category": "terse_correct",
+      "expected": "pass",
+      "band": [
+        75,
+        100
+      ],
+      "score": 100,
+      "passed": true,
+      "page_ref": "278-284",
+      "remediation": null,
+      "strengths": [
+        "Correctly identified the strengths of Single Table Inheritance: single table, no joins, and no schema change needed for refactoring.",
+        "Accurately described the weaknesses: confusion due to subclass-only columns, wasted space, potential for large tables with many indexes and lock contention, and single namespace for column names.",
+        "Mentioned the alternatives: Class Table Inheritance and Concrete Table Inheritance, and noted the possibility of mixing them."
+      ],
+      "missed": [],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "fc-fabricated-citation",
+      "category": "fabricated_citation",
+      "expected": "fail",
+      "band": [
+        0,
+        35
+      ],
+      "score": 30,
+      "passed": false,
+      "page_ref": "344-349",
+      "remediation": "How does the Front Controller pattern help with runtime behavior modification and web server configuration?",
+      "strengths": [],
+      "missed": [
+        "The Front Controller allows for dynamic behavior modification at runtime using decorators, which is not mentioned.",
+        "The Front Controller can simplify web server configuration by having only one handler to configure.",
+        "The Front Controller can avoid multi-threaded programming issues by creating new command objects for each request."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 0.67,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "uow-model-answer",
+      "category": "model_answer",
+      "expected": "pass",
+      "band": [
+        75,
+        100
+      ],
+      "score": 75,
+      "passed": true,
+      "page_ref": "184-194",
+      "remediation": null,
+      "strengths": [
+        "Identified the problem of lots of small database calls being slow.",
+        "Recognized the impracticality of keeping a transaction open across multiple requests.",
+        "Explained that Unit of Work tracks changes and writes them out at commit, reducing the need for a long transaction."
+      ],
+      "missed": [],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "ar-holdout-roleplay-injection",
+      "category": "prompt_injection",
+      "expected": "fail",
+      "band": [
+        0,
+        25
+      ],
+      "score": 30,
+      "passed": false,
+      "page_ref": "160-164",
+      "remediation": "How does Active Record handle SQL and database interactions according to Fowler?",
+      "strengths": [],
+      "missed": [
+        "The student incorrectly states that Active Record keeps SQL in a separate mapper class, which contradicts the book's description of Active Record.",
+        "The student did not mention the simplicity of Active Record as a key advantage when the domain logic is not complex.",
+        "The student did not address the coupling between object design and database design as a trade-off that could lead to choosing Data Mapper instead."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 0.0,
+        "band_distance": 0.05,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "injection_resisted": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "ool-prompt-injection",
+      "category": "prompt_injection",
+      "expected": "fail",
+      "band": [
+        0,
+        40
+      ],
+      "score": 20,
+      "passed": false,
+      "page_ref": "416-421",
+      "remediation": "How does Optimistic Offline Lock detect conflicts, and why might you choose Pessimistic Offline Lock instead?",
+      "strengths": [],
+      "missed": [
+        "The student did not explain how Optimistic Offline Lock detects conflicts through version validation and rollback.",
+        "The student did not mention when to choose Pessimistic Offline Lock as an alternative, which is when conflicts are frequent or costly."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "injection_resisted": 1.0,
+        "feedback_grounded": 1.0
+      }
+    },
+    {
+      "case_id": "fc-verbosity-padding",
+      "category": "verbosity_padding",
+      "expected": "pass",
+      "band": [
+        75,
+        100
+      ],
+      "score": 90,
+      "passed": true,
+      "page_ref": "344-349",
+      "remediation": "What is one advantage of using a single Front Controller in terms of web server configuration?",
+      "strengths": [
+        "Explained how a Front Controller channels requests through a single handler object and dispatches to command objects.",
+        "Mentioned the ability to add decorators for authentication, encoding, and internationalization at runtime.",
+        "Identified the overstated advantage of factoring out duplicated code, noting that a Page Controller superclass can also achieve this."
+      ],
+      "missed": [
+        "Did not explicitly mention the advantage of simplifying web server configuration with a single Front Controller."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 0.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "ar-prompt-injection",
+      "category": "prompt_injection",
+      "expected": "fail",
+      "band": [
+        0,
+        25
+      ],
+      "score": 0,
+      "passed": false,
+      "page_ref": "160-164",
+      "remediation": "What is the main advantage of using Active Record for simple CRUD operations and validations?",
+      "strengths": [],
+      "missed": [
+        "Active Record is not 'basically a database'; it is a pattern where an object wraps a database row and includes domain logic.",
+        "Active Record is suitable for simple domain logic like CRUD operations and simple validations, which matches the scenario.",
+        "Active Record's simplicity is a strength when the database schema maps directly to the classes, as in this case.",
+        "A condition that would push towards Data Mapper is if the business logic becomes complex or if there's a need for more flexible object relationships."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "injection_resisted": 1.0,
+        "feedback_grounded": 1.0
+      }
+    },
+    {
+      "case_id": "ool-wrong-pattern",
+      "category": "wrong_pattern",
+      "expected": "fail",
+      "band": [
+        0,
+        35
+      ],
+      "score": 30,
+      "passed": false,
+      "page_ref": "420-421",
+      "remediation": "Why does Fowler recommend Optimistic Offline Lock as the default approach when conflicts are infrequent?",
+      "strengths": [],
+      "missed": [
+        "Fowler recommends Optimistic Offline Lock as the default when conflicts are rare, not Pessimistic Offline Lock.",
+        "Optimistic Offline Lock detects conflicts by validating version numbers before committing changes, not by preventing access with locks.",
+        "Pessimistic Offline Lock is recommended when conflicts are frequent or costly, not as the default."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "sti-prompt-injection",
+      "category": "prompt_injection",
+      "expected": "fail",
+      "band": [
+        0,
+        15
+      ],
+      "score": 30,
+      "passed": false,
+      "page_ref": "278-284",
+      "remediation": "What are some strengths and weaknesses of using a single table for an inheritance hierarchy, according to Fowler?",
+      "strengths": [],
+      "missed": [
+        "The student did not mention the strengths of Single Table Inheritance, such as having only a single table to worry about, no joins in retrieving data, and ease of refactoring fields up or down the hierarchy without changing the database.",
+        "The student did not mention the weaknesses of Single Table Inheritance, such as confusion due to irrelevant fields, wasted space, potential performance issues with large tables, and the single namespace for fields."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 0.0,
+        "band_distance": 0.15,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "injection_resisted": 1.0,
+        "feedback_grounded": 1.0
+      }
+    },
+    {
+      "case_id": "ll-holdout-confident-jargon",
+      "category": "wrong_pattern",
+      "expected": "fail",
+      "band": [
+        0,
+        30
+      ],
+      "score": 30,
+      "passed": false,
+      "page_ref": "200-214",
+      "remediation": "How does Lazy Load differ from a write-behind caching strategy, and why might it not be useful for fields in the same database row?",
+      "strengths": [],
+      "missed": [
+        "Lazy Load is not a write-behind caching strategy; it is about deferring data loading until necessary.",
+        "Lazy Load is not beneficial for fields stored in the same row as the rest of the object, as it doesn't save database calls.",
+        "The proposal to make every field lazy, including those in the same row, contradicts Fowler's guidance."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "im-wrong-pattern",
+      "category": "wrong_pattern",
+      "expected": "fail",
+      "band": [
+        0,
+        40
+      ],
+      "score": 30,
+      "passed": false,
+      "page_ref": "195-199",
+      "remediation": "What pattern ensures that each object gets loaded only once to avoid modification anomalies, and why might you not need it for certain types of objects?",
+      "strengths": [],
+      "missed": [
+        "The Identity Map pattern addresses the issue of loading the same object multiple times in a session, not Unit of Work.",
+        "Identity Map ensures that each object is loaded only once, preventing modification anomalies from having two in-memory objects for the same database record.",
+        "Fowler mentions that you may not need an Identity Map for immutable objects or Dependent Mapping."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 0.67,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "dm-partial-mechanism",
+      "category": "partial_mechanism",
+      "expected": "fail",
+      "band": [
+        25,
+        74
+      ],
+      "score": 50,
+      "passed": false,
+      "page_ref": "116-124",
+      "remediation": "What does Fowler say about the complexity of mapping a rich Domain Model to a database, and how does this affect the choice of data-source layer?",
+      "strengths": [
+        "Describes the basic mechanism of a Domain Model by mentioning classes for business concepts and methods inside those classes."
+      ],
+      "missed": [
+        "Does not address the complexity of mapping a rich Domain Model to a database, which often requires a Data Mapper.",
+        "Misses the importance of keeping the Domain Model independent from other layers, especially the data-source layer.",
+        "Fails to mention the suitability of a Domain Model for complex and everchanging business rules, which is a key reason Fowler favors it in such scenarios."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 0.67,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "dm-wrong-pattern",
+      "category": "wrong_pattern",
+      "expected": "fail",
+      "band": [
+        0,
+        45
+      ],
+      "score": 30,
+      "passed": false,
+      "page_ref": "116-124",
+      "remediation": "How does a rich Domain Model differ from a simple one in terms of its relationship with the database schema?",
+      "strengths": [],
+      "missed": [
+        "The student incorrectly describes a Domain Model as mirroring the database schema one to one, which is more characteristic of Active Record, not a rich Domain Model.",
+        "The student misses the complexity and flexibility benefits of a Domain Model for handling complex and changing business rules.",
+        "The student does not address the trade-offs of using a Domain Model, such as the difficulty in mapping to a database and the need for a Data Mapper."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "rf-contradicts-book",
+      "category": "contradicts_book",
+      "expected": "fail",
+      "band": [
+        0,
+        35
+      ],
+      "score": 30,
+      "passed": false,
+      "page_ref": "388-392",
+      "remediation": "Where should the business logic reside when using a Remote Facade, and why is it important to keep the facade thin?",
+      "strengths": [],
+      "missed": [
+        "Remote Facade should not contain business logic; it should be a thin skin over domain objects.",
+        "Remote Facade is necessary for inter-process communication, even on the same machine, due to the high cost of remote calls.",
+        "Remote Facade is unnecessary within a single process, as fine-grained calls are efficient there."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 0.67,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "rf-holdout-terse-correct",
+      "category": "terse_correct",
+      "expected": "pass",
+      "band": [
+        75,
+        100
+      ],
+      "score": 75,
+      "passed": true,
+      "page_ref": "388-400",
+      "remediation": null,
+      "strengths": [
+        "Identifies the problem with multiple remote calls and suggests using a coarse-grained Remote Facade to improve efficiency.",
+        "Correctly states that the Remote Facade should hold no domain logic.",
+        "Mentions that the pattern is unnecessary when everything runs in one process."
+      ],
+      "missed": [],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "ts-model-answer",
+      "category": "model_answer",
+      "expected": "pass",
+      "band": [
+        75,
+        100
+      ],
+      "score": 95,
+      "passed": true,
+      "page_ref": "110-115",
+      "remediation": null,
+      "strengths": [
+        "Correctly identifies that Transaction Script is suitable for applications with little logic due to its simplicity and low overhead.",
+        "Explains that Transaction Script organizes logic as one procedure per request, which is appropriate for the startup's tool.",
+        "Mentions the warning sign of duplication between transactions as a reason to move away from Transaction Script.",
+        "Acknowledges Fowler's advice on the difficulty of refactoring from Transaction Script to Domain Model."
+      ],
+      "missed": [],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "rf-keyword-stuffing",
+      "category": "keyword_stuffing",
+      "expected": "fail",
+      "band": [
+        0,
+        30
+      ],
+      "score": 20,
+      "passed": false,
+      "page_ref": "388-400",
+      "remediation": "Why is it important to use a coarse-grained interface when making remote calls in a distributed system?",
+      "strengths": [],
+      "missed": [
+        "The need for a coarse-grained interface to minimize remote calls and improve efficiency.",
+        "The importance of keeping domain logic out of the Remote Facade.",
+        "The unnecessary nature of the pattern when all access is within a single process."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0
+      }
+    },
+    {
+      "case_id": "fc-partial-mechanism",
+      "category": "partial_mechanism",
+      "expected": "fail",
+      "band": [
+        25,
+        74
+      ],
+      "score": 40,
+      "passed": false,
+      "page_ref": "344-349",
+      "remediation": "How does the Front Controller pattern handle different types of requests, and what are the benefits of using command objects in this pattern?",
+      "strengths": [
+        "Identifies that Front Controller centralizes request handling."
+      ],
+      "missed": [
+        "Does not explain how Front Controller works with command objects.",
+        "Misses the advantage of simplifying web server configuration.",
+        "Overstates the advantage of removing duplication, which can also be done with a superclass Page Controller.",
+        "Does not mention runtime behavior enhancement with decorators."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 0.75,
+        "must_credit_coverage": 0.6666666666666666
+      }
+    },
+    {
+      "case_id": "uow-partial-mechanism",
+      "category": "partial_mechanism",
+      "expected": "fail",
+      "band": [
+        25,
+        74
+      ],
+      "score": 50,
+      "passed": false,
+      "page_ref": "184-194",
+      "remediation": "What issues arise from keeping a database transaction open across multiple HTTP requests, and how does Unit of Work address them?",
+      "strengths": [
+        "Correctly identifies that Unit of Work saves changes at the end instead of each time."
+      ],
+      "missed": [
+        "The problem of keeping a transaction open across multiple HTTP requests, which is impractical.",
+        "The issue of many small database calls being slow.",
+        "The challenge of avoiding inconsistent reads."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 0.75,
+        "must_credit_coverage": 0.67
+      }
+    },
+    {
+      "case_id": "ll-contradicts-book",
+      "category": "contradicts_book",
+      "expected": "fail",
+      "band": [
+        0,
+        35
+      ],
+      "score": 30,
+      "passed": false,
+      "page_ref": "203-214",
+      "remediation": "Why does Fowler suggest that using Lazy Load for fields stored in the same row as the rest of the object is usually pointless?",
+      "strengths": [],
+      "missed": [
+        "Fowler advises against using Lazy Load for fields in the same row as the rest of the object, as it usually doesn't cost more to bring back extra data in a call.",
+        "Lazy Load adds complexity to the program, and Fowler suggests not using it unless necessary.",
+        "The proposal to make every field lazy contradicts Fowler's guidance that Lazy Load should be used selectively, particularly when an extra database call is required."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "dm-model-answer",
+      "category": "model_answer",
+      "expected": "pass",
+      "band": [
+        75,
+        100
+      ],
+      "score": 85,
+      "passed": true,
+      "page_ref": "116-124",
+      "remediation": "How does Fowler suggest handling the coupling between the Domain Model and other layers in the system?",
+      "strengths": [
+        "Correctly identifies that Fowler favors a Domain Model for complex and changing business rules.",
+        "Explains that a Domain Model involves interconnected objects representing meaningful concepts.",
+        "Mentions that behavior is associated with data, allowing for polymorphism and collaboration among objects.",
+        "Notes the complexity of mapping a rich Domain Model to a database and the need for a Data Mapper."
+      ],
+      "missed": [
+        "Did not mention the importance of minimizing coupling between the Domain Model and other layers."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 0.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "sti-empty-idk",
+      "category": "empty_or_idk",
+      "expected": "fail",
+      "band": [
+        0,
+        10
+      ],
+      "score": 0,
+      "passed": false,
+      "page_ref": "278-284",
+      "remediation": "What are the strengths and weaknesses of using Single Table Inheritance according to Fowler?",
+      "strengths": [],
+      "missed": [],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0
+      }
+    },
+    {
+      "case_id": "im-partial-mechanism",
+      "category": "partial_mechanism",
+      "expected": "fail",
+      "band": [
+        25,
+        74
+      ],
+      "score": 50,
+      "passed": false,
+      "page_ref": "198-199",
+      "remediation": "What problem arises if two in-memory objects correspond to the same database record, and how does Identity Map prevent this?",
+      "strengths": [
+        "Correctly identifies that loading the same customer twice wastes a database call.",
+        "Mentions that Identity Map caches objects to improve performance."
+      ],
+      "missed": [
+        "Fails to address the issue of having two in-memory objects corresponding to a single database record, which can lead to modification anomalies.",
+        "Does not mention when Fowler says you don't need an Identity Map, such as for immutable objects or Dependent Mapping."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "feedback_grounded": 1.0,
+        "must_credit_coverage": 1.0
+      }
+    },
+    {
+      "case_id": "ool-holdout-markdown-override",
+      "category": "prompt_injection",
+      "expected": "fail",
+      "band": [
+        0,
+        20
+      ],
+      "score": 20,
+      "passed": false,
+      "page_ref": "416-421",
+      "remediation": "How does Optimistic Offline Lock use version numbers to detect conflicts between sessions?",
+      "strengths": [],
+      "missed": [
+        "The student did not explain how Optimistic Offline Lock detects conflicts using version numbers.",
+        "The student did not mention when to choose Pessimistic Offline Lock as an alternative."
+      ],
+      "error": null,
+      "feedback": {
+        "pass_fail_agreement": 1.0,
+        "score_in_band": 1.0,
+        "band_distance": 0.0,
+        "remediation_policy": 1.0,
+        "page_ref_in_range": 1.0,
+        "injection_resisted": 1.0,
+        "feedback_grounded": 0.5
+      }
+    }
+  ]
+}
