@@ -208,9 +208,11 @@ def build_hub_prompt(prompt_rev: str):
     from patterns_tutor.schemas import PASS_THRESHOLD, EvaluationResult
 
     system = GRADER_PROMPTS[prompt_rev].replace("{threshold}", str(PASS_THRESHOLD))
+    # A JSON Schema dict, not the Pydantic class: the class serializes to null in the hub
+    # manifest, and the pulled prompt then fails to load
     return StructuredPrompt.from_messages_and_schema(
         [("system", system), ("human", GRADER_HUMAN_TEMPLATES[prompt_rev])],
-        EvaluationResult,
+        EvaluationResult.model_json_schema(),
     )
 
 
@@ -224,15 +226,45 @@ def cmd_push_prompt(args) -> int:
     if set(prompt.input_variables) != DATASET_INPUT_KEYS:
         print(f"Prompt variables {sorted(prompt.input_variables)} do not match the dataset inputs.")
         return 1
+    client = Client()
     model_name = args.model.removeprefix("openai:")
-    url = Client().push_prompt(
+    # Tags are set separately: push_prompt's commit_tags fails with 409 once a tag exists,
+    # after the commit has already been created
+    url = client.push_prompt(
         args.name,
         object=prompt | ChatOpenAI(model=model_name, temperature=0.2),
         description="PoEAA tutor answer grader. Inputs match the poeaa-grading-golden dataset.",
-        commit_tags=[args.prompt_rev],
     )
-    print(f"Pushed {args.name} ({args.prompt_rev}, sha {prompt_sha(args.prompt_rev)}): {url}")
+    commit = tag_latest_commit(client, args.name, args.prompt_rev)
+    print(
+        f"Pushed {args.name}:{args.prompt_rev} (prompt sha {prompt_sha(args.prompt_rev)}, "
+        f"commit {commit[:8]}): {url}"
+    )
     return 0
+
+
+def tag_latest_commit(client, name: str, tag: str) -> str:
+    """Points `tag` at the prompt's newest commit, creating or moving it. Returns the hash."""
+    newest = client.request_with_retries(
+        "GET", f"/commits/-/{name}/", params={"limit": 1}
+    ).json()["commits"][0]
+    existing = client.request_with_retries("GET", f"/repos/-/{name}/tags").json()
+    if any(item["tag_name"] == tag for item in existing):
+        response = client.session.request(
+            "PATCH",
+            f"{client.api_url}/repos/-/{name}/tags/{tag}",
+            json={"commit_id": newest["id"]},
+            headers=client._headers,
+        )
+    else:
+        response = client.session.request(
+            "POST",
+            f"{client.api_url}/repos/-/{name}/tags",
+            json={"tag_name": tag, "commit_id": newest["id"]},
+            headers=client._headers,
+        )
+    response.raise_for_status()
+    return newest["commit_hash"]
 
 
 def main(argv: list[str] | None = None) -> int:

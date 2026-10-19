@@ -2,6 +2,8 @@
 
 from types import SimpleNamespace
 
+import pytest
+
 from patterns_tutor.catalog import POEAA_CATALOG
 from patterns_tutor.evals import evaluators as ev
 from patterns_tutor.evals.dataset import build_examples, load_cases
@@ -104,3 +106,16 @@ def test_hub_prompt_variables_match_dataset_inputs():
         assert set(prompt.input_variables) == DATASET_INPUT_KEYS
         rendered = prompt.format_messages(**{key: key.upper() for key in DATASET_INPUT_KEYS})
         assert "75" in rendered[0].content and "ANSWER" in rendered[1].content
+
+
+@pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
+def test_hub_prompt_serializes_with_its_schema():
+    from langchain_core.load import dumpd, load
+
+    from patterns_tutor.evals.cli import build_hub_prompt
+
+    manifest = dumpd(build_hub_prompt("v2"))
+    assert manifest["kwargs"]["schema_"]["title"] == "EvaluationResult"
+    assert "score" in manifest["kwargs"]["schema_"]["properties"]
+    restored = load(manifest, allowed_objects="all")
+    assert set(restored.input_variables) == set(build_hub_prompt("v2").input_variables)
