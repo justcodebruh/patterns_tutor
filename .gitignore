@@ -19,3 +19,7 @@ poeaa_chroma/
 # Local tutor state and eval run logs
 *.sqlite
 evals/results/*.log
+
+# Local planning docs
+IMPLEMENTATION_PLAN.md
+OBSERVABILITY_PLAN.md

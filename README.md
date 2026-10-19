@@ -5,8 +5,6 @@ Architecture*, grades your answers against the book, and asks Socratic follow-up
 pass. It is instrumented with LangSmith, and its grader is evaluated against a hand-written
 golden dataset.
 
-* Design and LangGraph conventions: [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)
-* Observability and evaluation plan: [OBSERVABILITY_PLAN.md](OBSERVABILITY_PLAN.md)
 * Running the experiment from the LangSmith UI: [evals/UI_EXPERIMENT.md](evals/UI_EXPERIMENT.md)
 
 ## Quick start
